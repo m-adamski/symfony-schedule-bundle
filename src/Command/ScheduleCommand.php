@@ -25,9 +25,10 @@ class ScheduleCommand extends Command {
      * ScheduleCommand constructor.
      *
      * @param ContainerInterface $container
+     * @param null|string        $name
      */
-    public function __construct(ContainerInterface $container) {
-        parent::__construct();
+    public function __construct(ContainerInterface $container, ?string $name = null) {
+        parent::__construct($name);
         $this->container = $container;
     }
 

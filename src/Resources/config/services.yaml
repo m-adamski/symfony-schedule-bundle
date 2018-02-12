@@ -1,0 +1,10 @@
+services:
+    schedule_bundle.command.schedule:
+        class: Adamski\Symfony\ScheduleBundle\Command\ScheduleCommand
+        arguments:
+            - '@service_container'
+        tags:
+            - { name: console.command, command: 'schedule:run' }
+
+    Adamski\Symfony\ScheduleBundle\Command\ScheduleCommand:
+        alias: schedule_bundle.command.schedule
