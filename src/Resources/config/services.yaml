@@ -2,7 +2,7 @@ services:
     schedule_bundle.command.schedule:
         class: Adamski\Symfony\ScheduleBundle\Command\ScheduleCommand
         arguments:
-            - '@service_container'
+            - "@schedule_bundle.manager"
         tags:
             - { name: console.command, command: 'schedule:run' }
 

@@ -7,7 +7,6 @@ use Adamski\Symfony\ScheduleBundle\Model\Schedule;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class ScheduleCommand extends Command {
 
@@ -17,19 +16,19 @@ class ScheduleCommand extends Command {
     protected static $defaultName = "schedule:run";
 
     /**
-     * @var ContainerInterface
+     * @var ManagerInterface
      */
-    protected $container;
+    protected $scheduleManager;
 
     /**
      * ScheduleCommand constructor.
      *
-     * @param ContainerInterface $container
-     * @param null|string        $name
+     * @param ManagerInterface $manager
+     * @param null|string      $name
      */
-    public function __construct(ContainerInterface $container, ?string $name = null) {
+    public function __construct(ManagerInterface $manager, ?string $name = null) {
         parent::__construct($name);
-        $this->container = $container;
+        $this->scheduleManager = $manager;
     }
 
     /**
@@ -56,10 +55,8 @@ class ScheduleCommand extends Command {
      * @return ManagerInterface|null
      */
     private function getScheduleManager() {
-        if ($scheduleManager = $this->getContainer()->getParameter("schedule.manager")) {
-            if ($scheduleManager instanceof ManagerInterface) {
-                return $scheduleManager;
-            }
+        if ($this->scheduleManager instanceof ManagerInterface) {
+            return $this->scheduleManager;
         }
 
         return null;
@@ -74,14 +71,5 @@ class ScheduleCommand extends Command {
         return new Schedule(
             $this->getApplication()
         );
-    }
-
-    /**
-     * Get Container.
-     *
-     * @return ContainerInterface
-     */
-    private function getContainer() {
-        return $this->container;
     }
 }
