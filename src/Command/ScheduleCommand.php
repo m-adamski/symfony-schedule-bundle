@@ -2,8 +2,11 @@
 
 namespace Adamski\Symfony\ScheduleBundle\Command;
 
+use Adamski\Symfony\ScheduleBundle\DependencyInjection\ScheduleExtension;
 use Adamski\Symfony\ScheduleBundle\Model\ManagerInterface;
 use Adamski\Symfony\ScheduleBundle\Model\Schedule;
+use Cake\Chronos\Chronos;
+use InvalidArgumentException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -14,6 +17,11 @@ class ScheduleCommand extends Command {
      * @var string
      */
     protected static $defaultName = "schedule:run";
+
+    /**
+     * @var Chronos
+     */
+    protected $commandTime;
 
     /**
      * @var ManagerInterface
@@ -28,6 +36,7 @@ class ScheduleCommand extends Command {
      */
     public function __construct(ManagerInterface $manager, ?string $name = null) {
         parent::__construct($name);
+        $this->commandTime = Chronos::now();
         $this->scheduleManager = $manager;
     }
 
@@ -43,9 +52,13 @@ class ScheduleCommand extends Command {
      */
     protected function execute(InputInterface $input, OutputInterface $output) {
         if ($scheduleManager = $this->getScheduleManager()) {
-            $scheduleManager->schedule(
-                $this->getSchedule()
-            );
+            $schedule = $this->getSchedule($output);
+
+            // Generate tasks collection and then execute all due tasks
+            $scheduleManager->schedule($schedule);
+            $schedule->execute($this->commandTime);
+        } else {
+            throw new InvalidArgumentException(sprintf("It looks like there is already registered service under the '%s' name", ScheduleExtension::$serviceName));
         }
     }
 
@@ -65,11 +78,12 @@ class ScheduleCommand extends Command {
     /**
      * Get Schedule.
      *
+     * @param OutputInterface $output
      * @return Schedule
      */
-    private function getSchedule() {
+    private function getSchedule(OutputInterface $output) {
         return new Schedule(
-            $this->getApplication()
+            $this->getApplication(), $output
         );
     }
 }

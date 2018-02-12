@@ -13,6 +13,7 @@
     "require": {
         "php": "^7.1",
         "cakephp/chronos": "^1.1",
+        "dragonmantank/cron-expression": "^2.0",
         "symfony/console": "^4.0",
         "symfony/framework-bundle": "^4.0"
     },
