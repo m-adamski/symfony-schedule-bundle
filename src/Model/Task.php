@@ -66,7 +66,17 @@ class Task {
      * @return array
      */
     public function getParameters() {
-        return $this->parameters;
+        $parametersArray = [];
+
+        foreach ($this->parameters as $parameterKey => $parameterValue) {
+            if (substr($parameterKey, 0, 2) !== "--") {
+                $parameterKey = sprintf("--%s", $parameterKey);
+            }
+
+            $parametersArray[$parameterKey] = $parameterValue;
+        }
+
+        return $parametersArray;
     }
 
     /**
@@ -98,5 +108,15 @@ class Task {
      */
     public function isDue(DateTime $commandTime) {
         return CronExpression::factory($this->getCronExpression())->isDue($commandTime);
+    }
+
+    /**
+     * Get next running date.
+     *
+     * @param DateTime $commandTime
+     * @return DateTime
+     */
+    public function nextDate(DateTime $commandTime) {
+        return CronExpression::factory($this->getCronExpression())->getNextRunDate($commandTime);
     }
 }
