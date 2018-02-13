@@ -5,7 +5,7 @@ namespace Adamski\Symfony\ScheduleBundle\Command;
 use Adamski\Symfony\ScheduleBundle\DependencyInjection\ScheduleExtension;
 use Adamski\Symfony\ScheduleBundle\Model\ManagerInterface;
 use Adamski\Symfony\ScheduleBundle\Model\Schedule;
-use Cake\Chronos\Chronos;
+use DateTime;
 use InvalidArgumentException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -19,7 +19,7 @@ class ScheduleCommand extends Command {
     protected static $defaultName = "schedule:run";
 
     /**
-     * @var Chronos
+     * @var DateTime
      */
     protected $commandTime;
 
@@ -36,7 +36,7 @@ class ScheduleCommand extends Command {
      */
     public function __construct(ManagerInterface $manager, ?string $name = null) {
         parent::__construct($name);
-        $this->commandTime = Chronos::now();
+        $this->commandTime = new DateTime();
         $this->scheduleManager = $manager;
     }
 

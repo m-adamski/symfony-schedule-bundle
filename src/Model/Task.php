@@ -2,8 +2,8 @@
 
 namespace Adamski\Symfony\ScheduleBundle\Model;
 
-use Cake\Chronos\Chronos;
 use Cron\CronExpression;
+use DateTime;
 use Symfony\Component\Console\Command\Command;
 
 class Task {
@@ -93,10 +93,10 @@ class Task {
     /**
      * Check if Task should be run.
      *
-     * @param Chronos $commandTime
+     * @param DateTime $commandTime
      * @return bool
      */
-    public function isDue(Chronos $commandTime) {
+    public function isDue(DateTime $commandTime) {
         return CronExpression::factory($this->getCronExpression())->isDue($commandTime);
     }
 }

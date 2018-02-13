@@ -2,7 +2,7 @@
 
 namespace Adamski\Symfony\ScheduleBundle\Model;
 
-use Cake\Chronos\Chronos;
+use DateTime;
 use Exception;
 use InvalidArgumentException;
 use Symfony\Component\Console\Application;
@@ -62,9 +62,9 @@ class Schedule {
     /**
      * Execute tasks.
      *
-     * @param Chronos $commandTime
+     * @param DateTime $commandTime
      */
-    public function execute(Chronos $commandTime) {
+    public function execute(DateTime $commandTime) {
         foreach ($this->tasks as $task) {
             if ($task->isDue($commandTime)) {
                 try {
