@@ -88,14 +88,34 @@ class Schedule {
                         ], $task->getArguments(), $task->getParameters()));
 
                         // Run Command
-                        $this->writeInfo(sprintf("Running '%s' command..", $commandName), false, true);
+                        $this->writeInfo(sprintf("Running '%s' command:", $commandName));
+                        $this->writeInfo(sprintf(" * Description: %s", $task->getDescription()));
+                        $this->writeInfo(sprintf(" * Arguments: [%s]", implode(", ", $task->getArguments())));
+                        $this->writeInfo(sprintf(" * Parameters: [%s]", implode(", ", $task->getParameters())), false, true);
+
                         $task->getCommand()->run($commandInput, $this->consoleOutput);
                         $this->writeEmptyLine();
                     } catch (Exception $exception) {
-                        $this->writeError(sprintf("Exception while running '%s' command: %s", $commandName, $exception->getMessage()));
+                        $this->writeError(
+                            sprintf(
+                                "Exception while running '%s' command with arguments [%s] and parameters [%s]: %s",
+                                $commandName,
+                                implode(", ", $task->getArguments()),
+                                implode(", ", $task->getParameters()),
+                                $exception->getMessage()
+                            )
+                        );
                     }
                 } else {
-                    $this->writeComment(sprintf("Ignoring '%s' command. Next running at %s", $commandName, $task->nextDate($commandTime)->format("Y-m-d H:i")));
+                    $this->writeComment(
+                        sprintf(
+                            "Ignoring '%s' command with arguments [%s] and parameters [%s]. Next running at %s",
+                            $commandName,
+                            implode(", ", $task->getArguments()),
+                            implode(", ", $task->getParameters()),
+                            $task->nextDate($commandTime)->format("Y-m-d H:i")
+                        )
+                    );
                 }
             }
         } else {

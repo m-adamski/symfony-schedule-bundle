@@ -76,3 +76,7 @@ Now it's enough to insert only one entry into crontab on server:
 ```
 * * * * * php /path-to-project/bin/console schedule:run >> schedule.log 2>&1
 ```
+
+## License
+
+MIT
