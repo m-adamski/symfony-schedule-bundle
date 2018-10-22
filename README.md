@@ -4,18 +4,8 @@ Bundle for simplifying operations with CRON jobs.
 
 ## Installation
 
-This Bundle can be installed by Composer. First add repository configuration into ``composer.json`` file:
+This Bundle can be installed by Composer:
 
-```
-"repositories": [
-        {
-            "type": "git",
-            "url": "https://github.com/m-adamski/symfony-schedule-bundle"
-        }
-    ]
-```
-
-Now it's time to install Bundle with command:
 ```
 $ composer require m-adamski/symfony-schedule-bundle
 ```
@@ -67,7 +57,46 @@ public function schedule(Schedule $schedule) {
 }
 ```
 
-Schedule class provide many date-time manipulators. This functionality is inspired by [Laravel Tasks Scheduling](https://laravel.com/docs/5.6/scheduling).
+Schedule class provide many date-time manipulators. This functionality is inspired by Laravel Tasks Scheduling.
+
+## Schedule Frequency Options
+
+There are many schedules that you can assign to your task.
+
+| Method                                         |
+| ---------------------------------------------- |
+| cron($expression)                              |
+| everyMinute()                                  |
+| everyFiveMinutes()                             |
+| cron($expression)                              |
+| everyMinute()                                  |
+| everyFiveMinutes()                             |
+| everyTenMinutes()                              |
+| everyFifteenMinutes()                          |
+| everyThirtyMinutes()                           |
+| hourly()                                       |
+| hourlyAt(int $offset)                          |
+| daily()                                        |
+| at(string $time)                               |
+| dailyAt(string $time)                          |
+| twiceDaily(int $first = 1, int $second = 13)   |
+| weekdays()                                     |
+| weekends()                                     |
+| mondays()                                      |
+| tuesdays()                                     |
+| wednesdays()                                   |
+| thursdays()                                    |
+| fridays()                                      |
+| saturdays()                                    |
+| sundays()                                      |
+| weekly()                                       |
+| weeklyOn(int $day, string $time = "0:0")       |
+| monthly()                                      |
+| monthlyOn(int $day = 1, string $time = "0:0")  |
+| twiceMonthly(int $first = 1, int $second = 16) |
+| quarterly()                                    |
+| yearly()                                       |
+| days($days)                                    |
 
 ## CRON
 
