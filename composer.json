@@ -13,8 +13,8 @@
     "require": {
         "php": "^7.1",
         "dragonmantank/cron-expression": "^2.0",
-        "symfony/console": "^4.0",
-        "symfony/framework-bundle": "^4.0"
+        "symfony/console": "^3.4|^4.1",
+        "symfony/framework-bundle": "^3.4|^4.1"
     },
     "config": {
         "sort-packages": true

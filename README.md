@@ -10,16 +10,6 @@ This Bundle can be installed by Composer:
 $ composer require m-adamski/symfony-schedule-bundle
 ```
 
-## Configuration
-
-To use this bundle, you need to register it in ``config/bundles.php`` - Symfony Flex should do it automatically.
-
-```(php)
-return [
-    Adamski\Symfony\ScheduleBundle\ScheduleBundle::class => ['all' => true],
-];
-```
-
 ## How to use it?
 
 Bundle provide functionality to manage CRON jobs by configuration from specified file.
