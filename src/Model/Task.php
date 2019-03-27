@@ -36,6 +36,11 @@ class Task {
     protected $description;
 
     /**
+     * @var boolean
+     */
+    protected $withoutOverlapping = false;
+
+    /**
      * Task constructor.
      *
      * @param Command $command
@@ -118,5 +123,24 @@ class Task {
      */
     public function nextDate(DateTime $commandTime) {
         return CronExpression::factory($this->getCronExpression())->getNextRunDate($commandTime);
+    }
+
+    /**
+     * Preventing Task Overlaps
+     *
+     * @return $this
+     */
+    public function withoutOverlapping() {
+        $this->withoutOverlapping = true;
+        return $this;
+    }
+
+    /**
+     * Is task without overlapping
+     *
+     * @return bool
+     */
+    public function isWithoutOverlapping() {
+        return $this->withoutOverlapping;
     }
 }
