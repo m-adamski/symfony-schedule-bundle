@@ -13,8 +13,12 @@ class Configuration implements ConfigurationInterface {
      * @return TreeBuilder The tree builder
      */
     public function getConfigTreeBuilder() {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root("schedule");
+        $treeBuilder = new TreeBuilder('schedule');
+        if (\method_exists($treeBuilder, 'getRootNode')) {
+            $rootNode = $treeBuilder->getRootNode();
+        } else {
+            $rootNode = $treeBuilder->root('schedule');
+        }
 
         $rootNode
             ->children()
