@@ -38,7 +38,8 @@ class ScheduleCommand extends Command {
      * ScheduleCommand constructor.
      *
      * @param ManagerInterface $manager
-     * @param null|string      $name
+     * @param LockFactory      $lockFactory
+     * @param string|null      $name
      */
     public function __construct(ManagerInterface $manager, LockFactory $lockFactory, ?string $name = null) {
         parent::__construct($name);

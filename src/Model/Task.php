@@ -132,6 +132,7 @@ class Task {
      */
     public function withoutOverlapping() {
         $this->withoutOverlapping = true;
+
         return $this;
     }
 

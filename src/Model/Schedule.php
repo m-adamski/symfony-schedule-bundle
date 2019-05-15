@@ -71,7 +71,8 @@ class Schedule {
     /**
      * Execute tasks.
      *
-     * @param DateTime $commandTime
+     * @param DateTime    $commandTime
+     * @param LockFactory $lockFactory
      */
     public function execute(DateTime $commandTime, LockFactory $lockFactory) {
         $this->writeEmptyLine();
@@ -83,11 +84,13 @@ class Schedule {
                 if ($task->isDue($commandTime)) {
                     try {
                         if ($task->isWithoutOverlapping()) {
-                            $lock = $lockFactory->createLock('symfony-schedule:'.$commandName);
+                            $lock = $lockFactory->createLock("symfony-schedule:" . $commandName);
+
                             if (!$lock->acquire()) {
                                 $this->writeComment(
                                     sprintf("Skip '%s' command as it is already running", $commandName)
                                 );
+
                                 continue;
                             }
                         }
