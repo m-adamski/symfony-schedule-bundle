@@ -8,6 +8,7 @@ use InvalidArgumentException;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Lock\Factory as LockFactory;
 
 class Schedule {
 
@@ -70,9 +71,10 @@ class Schedule {
     /**
      * Execute tasks.
      *
-     * @param DateTime $commandTime
+     * @param DateTime    $commandTime
+     * @param LockFactory $lockFactory
      */
-    public function execute(DateTime $commandTime) {
+    public function execute(DateTime $commandTime, LockFactory $lockFactory) {
         $this->writeEmptyLine();
 
         if (is_array($this->tasks) && count($this->tasks) > 0) {
@@ -81,6 +83,17 @@ class Schedule {
 
                 if ($task->isDue($commandTime)) {
                     try {
+                        if ($task->isWithoutOverlapping()) {
+                            $lock = $lockFactory->createLock("symfony-schedule:" . $commandName);
+
+                            if (!$lock->acquire()) {
+                                $this->writeComment(
+                                    sprintf("Skip '%s' command as it is already running", $commandName)
+                                );
+
+                                continue;
+                            }
+                        }
 
                         // Define Command Input variable
                         $commandInput = new ArrayInput(array_merge([

@@ -3,6 +3,7 @@ services:
         class: Adamski\Symfony\ScheduleBundle\Command\ScheduleCommand
         arguments:
             - "@schedule_bundle.manager"
+            - "@lock.default.factory"
         tags:
             - { name: console.command, command: 'schedule:run' }
 

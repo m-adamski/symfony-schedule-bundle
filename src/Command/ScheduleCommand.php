@@ -10,6 +10,7 @@ use InvalidArgumentException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Lock\Factory as LockFactory;
 
 class ScheduleCommand extends Command {
 
@@ -29,15 +30,22 @@ class ScheduleCommand extends Command {
     protected $scheduleManager;
 
     /**
+     * @var LockFactory
+     */
+    protected $lockFactory;
+
+    /**
      * ScheduleCommand constructor.
      *
      * @param ManagerInterface $manager
-     * @param null|string      $name
+     * @param LockFactory      $lockFactory
+     * @param string|null      $name
      */
-    public function __construct(ManagerInterface $manager, ?string $name = null) {
+    public function __construct(ManagerInterface $manager, LockFactory $lockFactory, ?string $name = null) {
         parent::__construct($name);
         $this->commandTime = new DateTime();
         $this->scheduleManager = $manager;
+        $this->lockFactory = $lockFactory;
     }
 
     /**
@@ -56,7 +64,7 @@ class ScheduleCommand extends Command {
 
             // Generate tasks collection and then execute all due tasks
             $scheduleManager->schedule($schedule);
-            $schedule->execute($this->commandTime);
+            $schedule->execute($this->commandTime, $this->lockFactory);
         } else {
             throw new InvalidArgumentException(sprintf("It looks like there is already registered service under the '%s' name", ScheduleExtension::$serviceName));
         }
