@@ -8,7 +8,7 @@ use InvalidArgumentException;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Lock\Factory as LockFactory;
+use Symfony\Component\Lock\LockFactory;
 
 class Schedule {
 
