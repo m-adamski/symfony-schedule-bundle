@@ -68,6 +68,8 @@ class ScheduleCommand extends Command {
         } else {
             throw new InvalidArgumentException(sprintf("It looks like there is already registered service under the '%s' name", ScheduleExtension::$serviceName));
         }
+        
+        return 0;
     }
 
     /**
