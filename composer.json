@@ -11,11 +11,11 @@
     ],
     "minimum-stability": "stable",
     "require": {
-        "php": "^7.2",
-        "dragonmantank/cron-expression": "^2.3",
-        "symfony/console": "^5.0",
-        "symfony/framework-bundle": "^5.0",
-        "symfony/lock": "^5.0"
+        "php": ">=8.0.2",
+        "dragonmantank/cron-expression": "^3.3",
+        "symfony/console": "^6.0",
+        "symfony/framework-bundle": "^6.0",
+        "symfony/lock": "^6.0"
     },
     "config": {
         "sort-packages": true
@@ -27,7 +27,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "2.0.x-dev"
+            "dev-master": "3.0.x-dev"
         }
     }
 }

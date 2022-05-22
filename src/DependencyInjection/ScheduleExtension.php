@@ -12,7 +12,7 @@ class ScheduleExtension extends Extension {
     /**
      * @var string
      */
-    public static $serviceName = "schedule_bundle.manager";
+    public static string $serviceName = "schedule_bundle.manager";
 
     /**
      * {@inheritdoc}

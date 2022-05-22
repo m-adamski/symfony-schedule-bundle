@@ -22,17 +22,17 @@ class ScheduleCommand extends Command {
     /**
      * @var DateTime
      */
-    protected $commandTime;
+    protected DateTime $commandTime;
 
     /**
      * @var ManagerInterface
      */
-    protected $scheduleManager;
+    protected ManagerInterface $scheduleManager;
 
     /**
      * @var LockFactory
      */
-    protected $lockFactory;
+    protected LockFactory $lockFactory;
 
     /**
      * ScheduleCommand constructor.
@@ -58,7 +58,7 @@ class ScheduleCommand extends Command {
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output) {
+    protected function execute(InputInterface $input, OutputInterface $output): int {
         if ($scheduleManager = $this->getScheduleManager()) {
             $schedule = $this->getSchedule($output);
 
@@ -68,7 +68,7 @@ class ScheduleCommand extends Command {
         } else {
             throw new InvalidArgumentException(sprintf("It looks like there is already registered service under the '%s' name", ScheduleExtension::$serviceName));
         }
-        
+
         return 0;
     }
 
@@ -77,7 +77,7 @@ class ScheduleCommand extends Command {
      *
      * @return ManagerInterface|null
      */
-    private function getScheduleManager() {
+    private function getScheduleManager(): ?ManagerInterface {
         if ($this->scheduleManager instanceof ManagerInterface) {
             return $this->scheduleManager;
         }
@@ -91,7 +91,7 @@ class ScheduleCommand extends Command {
      * @param OutputInterface $output
      * @return Schedule
      */
-    private function getSchedule(OutputInterface $output) {
+    private function getSchedule(OutputInterface $output): Schedule {
         return new Schedule(
             $this->getApplication(), $output
         );

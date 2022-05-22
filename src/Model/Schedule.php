@@ -15,22 +15,22 @@ class Schedule {
     /**
      * @var Task[]
      */
-    protected $tasks;
+    protected array $tasks;
 
     /**
      * @var Application
      */
-    protected $consoleApplication;
+    protected Application $consoleApplication;
 
     /**
      * @var OutputInterface
      */
-    protected $consoleOutput;
+    protected OutputInterface $consoleOutput;
 
     /**
      * @var boolean
      */
-    protected $quietMode;
+    protected bool $quietMode;
 
     /**
      * Schedule constructor.
@@ -56,7 +56,7 @@ class Schedule {
      *
      * @throws InvalidArgumentException
      */
-    public function command(string $command, array $arguments = [], array $parameters = []) {
+    public function command(string $command, array $arguments = [], array $parameters = []): Task {
         if ($this->consoleApplication->has($command)) {
             $this->tasks[] = $currentTask = new Task(
                 $this->consoleApplication->find($command), $arguments, $parameters
@@ -74,10 +74,10 @@ class Schedule {
      * @param DateTime    $commandTime
      * @param LockFactory $lockFactory
      */
-    public function execute(DateTime $commandTime, LockFactory $lockFactory) {
+    public function execute(DateTime $commandTime, LockFactory $lockFactory): void {
         $this->writeEmptyLine();
 
-        if (is_array($this->tasks) && count($this->tasks) > 0) {
+        if (count($this->tasks) > 0) {
             foreach ($this->tasks as $task) {
                 $commandName = $task->getCommand()->getName();
 
@@ -141,7 +141,7 @@ class Schedule {
      *
      * @return bool
      */
-    public function isQuietMode() {
+    public function isQuietMode(): bool {
         return $this->quietMode;
     }
 
@@ -150,7 +150,7 @@ class Schedule {
      *
      * @param bool $quietMode
      */
-    public function setQuietMode(bool $quietMode) {
+    public function setQuietMode(bool $quietMode): void {
         $this->quietMode = $quietMode;
     }
 
@@ -161,7 +161,7 @@ class Schedule {
      * @param bool   $lineBefore
      * @param bool   $lineAfter
      */
-    private function writeInfo(string $content, bool $lineBefore = false, bool $lineAfter = false) {
+    private function writeInfo(string $content, bool $lineBefore = false, bool $lineAfter = false): void {
         $this->writeMessage($content, "info", $lineBefore, $lineAfter);
     }
 
@@ -172,7 +172,7 @@ class Schedule {
      * @param bool   $lineBefore
      * @param bool   $lineAfter
      */
-    private function writeError(string $content, bool $lineBefore = false, bool $lineAfter = false) {
+    private function writeError(string $content, bool $lineBefore = false, bool $lineAfter = false): void {
         $this->writeMessage($content, "error", $lineBefore, $lineAfter);
     }
 
@@ -183,7 +183,7 @@ class Schedule {
      * @param bool   $lineBefore
      * @param bool   $lineAfter
      */
-    private function writeComment(string $content, bool $lineBefore = false, bool $lineAfter = false) {
+    private function writeComment(string $content, bool $lineBefore = false, bool $lineAfter = false): void {
         $this->writeMessage($content, "comment", $lineBefore, $lineAfter);
     }
 
@@ -195,7 +195,7 @@ class Schedule {
      * @param bool   $lineBefore
      * @param bool   $lineAfter
      */
-    private function writeMessage(string $content, string $type = "info", bool $lineBefore = false, bool $lineAfter = false) {
+    private function writeMessage(string $content, string $type = "info", bool $lineBefore = false, bool $lineAfter = false): void {
         if (!$this->isQuietMode()) {
 
             if ($lineBefore) {
@@ -217,7 +217,7 @@ class Schedule {
      *
      * @param int $lines
      */
-    private function writeEmptyLine(int $lines = 1) {
+    private function writeEmptyLine(int $lines = 1): void {
         if (!$this->isQuietMode()) {
             for ($i = 0; $i < $lines; $i++) {
                 $this->consoleOutput->writeln("");

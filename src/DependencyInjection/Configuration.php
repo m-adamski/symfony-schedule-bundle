@@ -12,15 +12,9 @@ class Configuration implements ConfigurationInterface {
      *
      * @return TreeBuilder The tree builder
      */
-    public function getConfigTreeBuilder() {
+    public function getConfigTreeBuilder(): TreeBuilder {
         $treeBuilder = new TreeBuilder("schedule");
-
-        if (method_exists($treeBuilder, "getRootNode")) {
-            $rootNode = $treeBuilder->getRootNode();
-        } else {
-            $rootNode = $treeBuilder->root("schedule");
-        }
-
+        $rootNode = $treeBuilder->getRootNode();
         $rootNode
             ->children()
             ->scalarNode("manager")->defaultValue(null)->end()

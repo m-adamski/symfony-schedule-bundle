@@ -4,6 +4,7 @@ namespace Adamski\Symfony\ScheduleBundle\Model;
 
 use Cron\CronExpression;
 use DateTime;
+use Exception;
 use Symfony\Component\Console\Command\Command;
 
 class Task {
@@ -13,32 +14,32 @@ class Task {
     /**
      * @var Command
      */
-    protected $command;
+    protected Command $command;
 
     /**
      * @var array
      */
-    protected $arguments;
+    protected array $arguments;
 
     /**
      * @var array
      */
-    protected $parameters;
+    protected array $parameters;
 
     /**
      * @var string
      */
-    protected $cronExpression = "* * * * *";
+    protected string $cronExpression = "* * * * *";
 
     /**
      * @var string
      */
-    protected $description;
+    protected string $description;
 
     /**
      * @var boolean
      */
-    protected $withoutOverlapping = false;
+    protected bool $withoutOverlapping = false;
 
     /**
      * Task constructor.
@@ -56,25 +57,25 @@ class Task {
     /**
      * @return Command
      */
-    public function getCommand() {
+    public function getCommand(): Command {
         return $this->command;
     }
 
     /**
      * @return array
      */
-    public function getArguments() {
+    public function getArguments(): array {
         return $this->arguments;
     }
 
     /**
      * @return array
      */
-    public function getParameters() {
+    public function getParameters(): array {
         $parametersArray = [];
 
         foreach ($this->parameters as $parameterKey => $parameterValue) {
-            if (substr($parameterKey, 0, 2) !== "--") {
+            if (!str_starts_with($parameterKey, "--")) {
                 $parameterKey = sprintf("--%s", $parameterKey);
             }
 
@@ -87,21 +88,21 @@ class Task {
     /**
      * @return string
      */
-    public function getCronExpression() {
+    public function getCronExpression(): string {
         return $this->cronExpression;
     }
 
     /**
      * @return string
      */
-    public function getDescription() {
+    public function getDescription(): string {
         return $this->description;
     }
 
     /**
      * @param string $description
      */
-    public function setDescription(string $description) {
+    public function setDescription(string $description): void {
         $this->description = $description;
     }
 
@@ -111,8 +112,9 @@ class Task {
      * @param DateTime $commandTime
      * @return bool
      */
-    public function isDue(DateTime $commandTime) {
-        return CronExpression::factory($this->getCronExpression())->isDue($commandTime);
+    public function isDue(DateTime $commandTime): bool {
+        $cronExpression = new CronExpression($this->getCronExpression());
+        return $cronExpression->isDue($commandTime);
     }
 
     /**
@@ -120,9 +122,11 @@ class Task {
      *
      * @param DateTime $commandTime
      * @return DateTime
+     * @throws Exception
      */
-    public function nextDate(DateTime $commandTime) {
-        return CronExpression::factory($this->getCronExpression())->getNextRunDate($commandTime);
+    public function nextDate(DateTime $commandTime): DateTime {
+        $cronExpression = new CronExpression($this->getCronExpression());
+        return $cronExpression->getNextRunDate($commandTime);
     }
 
     /**
@@ -130,7 +134,7 @@ class Task {
      *
      * @return $this
      */
-    public function withoutOverlapping() {
+    public function withoutOverlapping(): static {
         $this->withoutOverlapping = true;
 
         return $this;
@@ -141,7 +145,7 @@ class Task {
      *
      * @return bool
      */
-    public function isWithoutOverlapping() {
+    public function isWithoutOverlapping(): bool {
         return $this->withoutOverlapping;
     }
 }
