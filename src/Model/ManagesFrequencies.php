@@ -5,7 +5,7 @@ namespace Adamski\Symfony\ScheduleBundle\Model;
 trait ManagesFrequencies {
 
     /**
-     * The Cron expression representing the event"s frequency.
+     * The Cron expression representing the event's frequency.
      *
      * @param string $expression
      * @return $this

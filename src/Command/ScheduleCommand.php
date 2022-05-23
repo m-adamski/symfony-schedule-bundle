@@ -2,98 +2,42 @@
 
 namespace Adamski\Symfony\ScheduleBundle\Command;
 
-use Adamski\Symfony\ScheduleBundle\DependencyInjection\ScheduleExtension;
 use Adamski\Symfony\ScheduleBundle\Model\ManagerInterface;
 use Adamski\Symfony\ScheduleBundle\Model\Schedule;
-use DateTime;
-use InvalidArgumentException;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Lock\LockFactory;
 
+#[AsCommand(name: "schedule:run", description: "Runs scheduled tasks")]
 class ScheduleCommand extends Command {
 
-    /**
-     * @var string
-     */
-    protected static $defaultName = "schedule:run";
+    private \DateTime        $commandTime;
+    private LockFactory      $lockFactory;
+    private ManagerInterface $manager;
 
     /**
-     * @var DateTime
-     */
-    protected DateTime $commandTime;
-
-    /**
-     * @var ManagerInterface
-     */
-    protected ManagerInterface $scheduleManager;
-
-    /**
-     * @var LockFactory
-     */
-    protected LockFactory $lockFactory;
-
-    /**
-     * ScheduleCommand constructor.
-     *
-     * @param ManagerInterface $manager
      * @param LockFactory      $lockFactory
-     * @param string|null      $name
+     * @param ManagerInterface $manager
      */
-    public function __construct(ManagerInterface $manager, LockFactory $lockFactory, ?string $name = null) {
-        parent::__construct($name);
-        $this->commandTime = new DateTime();
-        $this->scheduleManager = $manager;
+    public function __construct(LockFactory $lockFactory, ManagerInterface $manager) {
+        parent::__construct();
+        $this->commandTime = new \DateTime();
         $this->lockFactory = $lockFactory;
+        $this->manager = $manager;
     }
 
     /**
-     * {@inheritdoc}
-     */
-    protected function configure() {
-        $this->setDescription("Runs scheduled tasks");
-    }
-
-    /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     protected function execute(InputInterface $input, OutputInterface $output): int {
-        if ($scheduleManager = $this->getScheduleManager()) {
-            $schedule = $this->getSchedule($output);
+        $schedule = new Schedule($this->getApplication(), $input, $output);
 
-            // Generate tasks collection and then execute all due tasks
-            $scheduleManager->schedule($schedule);
-            $schedule->execute($this->commandTime, $this->lockFactory);
-        } else {
-            throw new InvalidArgumentException(sprintf("It looks like there is already registered service under the '%s' name", ScheduleExtension::$serviceName));
-        }
+        // Generate tasks and execute all due
+        $this->manager->schedule($schedule);
+        $schedule->execute($this->commandTime, $this->lockFactory);
 
-        return 0;
-    }
-
-    /**
-     * Get Schedule Manager.
-     *
-     * @return ManagerInterface|null
-     */
-    private function getScheduleManager(): ?ManagerInterface {
-        if ($this->scheduleManager instanceof ManagerInterface) {
-            return $this->scheduleManager;
-        }
-
-        return null;
-    }
-
-    /**
-     * Get Schedule.
-     *
-     * @param OutputInterface $output
-     * @return Schedule
-     */
-    private function getSchedule(OutputInterface $output): Schedule {
-        return new Schedule(
-            $this->getApplication(), $output
-        );
+        return Command::SUCCESS;
     }
 }

@@ -3,47 +3,20 @@
 namespace Adamski\Symfony\ScheduleBundle\Model;
 
 use Cron\CronExpression;
-use DateTime;
-use Exception;
 use Symfony\Component\Console\Command\Command;
 
 class Task {
 
     use ManagesFrequencies;
 
-    /**
-     * @var Command
-     */
     protected Command $command;
+    protected array   $arguments;
+    protected array   $parameters;
+    protected string  $cronExpression     = "* * * * *";
+    protected string  $description        = "-";
+    protected bool    $withoutOverlapping = false;
 
     /**
-     * @var array
-     */
-    protected array $arguments;
-
-    /**
-     * @var array
-     */
-    protected array $parameters;
-
-    /**
-     * @var string
-     */
-    protected string $cronExpression = "* * * * *";
-
-    /**
-     * @var string
-     */
-    protected string $description;
-
-    /**
-     * @var boolean
-     */
-    protected bool $withoutOverlapping = false;
-
-    /**
-     * Task constructor.
-     *
      * @param Command $command
      * @param array   $arguments
      * @param array   $parameters
@@ -109,10 +82,10 @@ class Task {
     /**
      * Check if Task should be run.
      *
-     * @param DateTime $commandTime
+     * @param \DateTime $commandTime
      * @return bool
      */
-    public function isDue(DateTime $commandTime): bool {
+    public function isDue(\DateTime $commandTime): bool {
         $cronExpression = new CronExpression($this->getCronExpression());
         return $cronExpression->isDue($commandTime);
     }
@@ -120,13 +93,16 @@ class Task {
     /**
      * Get next running date.
      *
-     * @param DateTime $commandTime
-     * @return DateTime
-     * @throws Exception
+     * @param \DateTime $commandTime
+     * @return \DateTime|null
      */
-    public function nextDate(DateTime $commandTime): DateTime {
-        $cronExpression = new CronExpression($this->getCronExpression());
-        return $cronExpression->getNextRunDate($commandTime);
+    public function nextDate(\DateTime $commandTime): ?\DateTime {
+        try {
+            $cronExpression = new CronExpression($this->getCronExpression());
+            return $cronExpression->getNextRunDate($commandTime);
+        } catch (\Exception $exception) {
+            return null;
+        }
     }
 
     /**
