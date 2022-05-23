@@ -65,8 +65,10 @@ class Schedule {
     public function execute(\DateTime $commandTime, LockFactory $lockFactory): int {
         $counter = 0;
 
+        $this->block("Schedule Manager - Launch time %s", "fg=yellow", $commandTime->format("Y-m-d H:i:s"));
+
         if (count($this->tasks) <= 0) {
-            $this->console->info("There are no tasks to run");
+            $this->block("There are no tasks to run", "fg=yellow");
             return $counter;
         }
 
@@ -80,18 +82,16 @@ class Schedule {
                         $lock = $lockFactory->createLock("symfony-schedule:" . $commandName);
 
                         if (!$lock->acquire()) {
-                            $this->console->info(sprintf("Skip '%s' command as it is already running", $commandName));
+                            $this->text("Skip '%s' command as it is already running", $commandName);
                             continue;
                         }
                     }
 
                     // Print information with task details
-                    $this->console->text(sprintf("Running '%s' command:", $commandName));
-                    $this->console->listing([
-                        sprintf("Description: %s", $task->getDescription()),
-                        sprintf("Arguments: [%s]", implode(", ", $task->getArguments())),
-                        sprintf("Parameters: [%s]", implode(", ", $task->getParameters()))
-                    ]);
+                    $this->block("Running '%s'", "fg=green", $commandName);
+                    $this->text("  * Description: %s", $task->getDescription());
+                    $this->text("  * Arguments: [%s]", implode(", ", $task->getArguments()));
+                    $this->text("  * Parameters: [%s]", implode(", ", $task->getParameters()));
 
                     // Create command input as instance of ArrayInput
                     $commandInput = new ArrayInput(
@@ -101,27 +101,24 @@ class Schedule {
                     // Execute task
                     $counter++;
                     $task->getCommand()->run($commandInput, $this->output);
-                    if (!$this->isQuietMode()) $this->console->newLine();
+                    $this->block("~~~", "fg=yellow");
                 } catch (\Exception $exception) {
-                    $this->console->error(
-                        sprintf(
-                            "Exception while running '%s' command with arguments [%s] and parameters [%s]: %s",
-                            $commandName,
-                            implode(", ", $task->getArguments()),
-                            implode(", ", $task->getParameters()),
-                            $exception->getMessage()
-                        )
-                    );
-                }
-            } else {
-                $this->console->info(
-                    sprintf(
-                        "Ignoring '%s' command with arguments [%s] and parameters [%s]. Next run at %s",
+                    $this->block(
+                        "Exception while running '%s' command with arguments [%s] and parameters [%s]: %s",
+                        "fg=red",
                         $commandName,
                         implode(", ", $task->getArguments()),
                         implode(", ", $task->getParameters()),
-                        $task->nextDate($commandTime)->format("Y-m-d H:i")
-                    )
+                        $exception->getMessage()
+                    );
+                }
+            } else {
+                $this->text(
+                    "Ignoring '%s' command with arguments [%s] and parameters [%s]. Next run at %s",
+                    $commandName,
+                    implode(", ", $task->getArguments()),
+                    implode(", ", $task->getParameters()),
+                    $task->nextDate($commandTime)->format("Y-m-d H:i")
                 );
             }
         }
@@ -145,5 +142,28 @@ class Schedule {
      */
     public function setQuietMode(bool $quietMode): void {
         $this->quietMode = $quietMode;
+    }
+
+    /**
+     * Overwritten 'text' function to use 'sprintf' directly.
+     *
+     * @param string $message
+     * @param mixed  ...$values
+     * @return void
+     */
+    private function text(string $message, mixed ...$values): void {
+        $this->console->text(sprintf($message, ...$values));
+    }
+
+    /**
+     * Overwritten 'block' function to use 'sprintf' directly.
+     *
+     * @param string      $message
+     * @param string|null $style
+     * @param mixed       ...$values
+     * @return void
+     */
+    private function block(string $message, ?string $style = null, mixed ...$values): void {
+        $this->console->block(sprintf($message, ...$values), style: $style);
     }
 }
