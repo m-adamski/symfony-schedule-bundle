@@ -6,12 +6,8 @@ cache:
 jobs:
     fast_finish: true
     include:
-
-        -   php: 7.2
-            env: DEPENDENCIES="symfony/symfony:^5.0"
-
-        -   php: 7.3
-        -   php: 7.4
+        -   php: 8.0
+        -   php: 8.1
 
 before_install:
     - if ! [ -v "$DEPENDENCIES" ]; then composer require --no-update ${DEPENDENCIES}; fi;

@@ -2,8 +2,6 @@
 
 Bundle for simplifying operations with CRON jobs.
 
-Version 2.x is no longer compatible with Symfony version 4.x. In this case, use version 1.x
-
 ## Installation
 
 This Bundle can be installed by Composer:
