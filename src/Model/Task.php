@@ -9,23 +9,17 @@ class Task {
 
     use ManagesFrequencies;
 
-    protected Command $command;
-    protected array   $arguments;
-    protected array   $parameters;
-    protected string  $cronExpression     = "* * * * *";
-    protected string  $description        = "-";
-    protected bool    $withoutOverlapping = false;
+    protected string $cronExpression = "* * * * *";
+    protected string $description = "-";
+    protected bool $withoutOverlapping = false;
 
-    /**
-     * @param Command $command
-     * @param array   $arguments
-     * @param array   $parameters
-     */
-    public function __construct(Command $command, array $arguments = [], array $parameters = []) {
-        $this->command = $command;
-        $this->arguments = $arguments;
-        $this->parameters = $parameters;
+    public function __construct(
+        protected readonly Command $command,
+        protected readonly array   $arguments = [],
+        protected readonly array   $parameters = []
+    ) {
     }
+
 
     /**
      * @return Command

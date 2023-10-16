@@ -12,25 +12,22 @@ use Symfony\Component\Lock\LockFactory;
 
 class Schedule {
 
-    protected SymfonyStyle    $console;
-    protected Application     $consoleApplication;
-    protected InputInterface  $input;
-    protected OutputInterface $output;
-    protected bool            $quietMode;
-    protected array           $tasks;
-
     /**
+     * @param SymfonyStyle    $console
      * @param Application     $consoleApplication
      * @param InputInterface  $input
      * @param OutputInterface $output
+     * @param bool            $quietMode
+     * @param array           $tasks
      */
-    public function __construct(Application $consoleApplication, InputInterface $input, OutputInterface $output) {
-        $this->consoleApplication = $consoleApplication;
-        $this->input = $input;
-        $this->output = $output;
-        $this->console = new SymfonyStyle($input, $output);
-        $this->quietMode = false;
-        $this->tasks = [];
+    public function __construct(
+        protected readonly SymfonyStyle    $console,
+        protected readonly Application     $consoleApplication,
+        protected readonly InputInterface  $input,
+        protected readonly OutputInterface $output,
+        protected bool                     $quietMode,
+        protected array                    $tasks
+    ) {
     }
 
     /**
