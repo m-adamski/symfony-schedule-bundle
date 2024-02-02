@@ -8,13 +8,14 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Lock\LockFactory;
 
 #[AsCommand(name: "schedule:run", description: "Runs scheduled tasks")]
 class ScheduleCommand extends Command {
 
-    private \DateTime        $commandTime;
-    private LockFactory      $lockFactory;
+    private \DateTime $commandTime;
+    private LockFactory $lockFactory;
     private ManagerInterface $manager;
 
     /**
@@ -32,7 +33,8 @@ class ScheduleCommand extends Command {
      * @inheritDoc
      */
     protected function execute(InputInterface $input, OutputInterface $output): int {
-        $schedule = new Schedule($this->getApplication(), $input, $output);
+        $console = new SymfonyStyle($input, $output);
+        $schedule = new Schedule($console, $this->getApplication(), $input, $output, false, []);
 
         // Generate tasks and execute all due
         $this->manager->schedule($schedule);

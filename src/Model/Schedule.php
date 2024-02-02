@@ -4,6 +4,7 @@ namespace Adamski\Symfony\ScheduleBundle\Model;
 
 use InvalidArgumentException;
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Exception\ExceptionInterface;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -58,6 +59,7 @@ class Schedule {
      * @param \DateTime   $commandTime
      * @param LockFactory $lockFactory
      * @return int
+     * @throws ExceptionInterface
      */
     public function execute(\DateTime $commandTime, LockFactory $lockFactory): int {
         $counter = 0;
